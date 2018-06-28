@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import cn.com.isurpass.securityplatform.SpringUtil;
 import cn.com.isurpass.securityplatform.SystemConfig;
 import cn.com.isurpass.securityplatform.message.processor.IMessageProcessor;
+import cn.com.isurpass.securityplatform.service.AlarmService;
 import cn.com.isurpass.securityplatform.service.ConfigService;
 import cn.com.isurpass.securityplatform.util.HttpUtil;
 import io.netty.channel.ChannelHandlerContext;
@@ -38,6 +39,9 @@ public class MessageHandler extends SimpleChannelInboundHandler<String>
 	private ConfigService configservice ;
 	@Autowired
 	private SystemConfig systemconfig ;
+	
+	@Autowired
+	private AlarmService alarmservice;
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) 
@@ -123,6 +127,8 @@ public class MessageHandler extends SimpleChannelInboundHandler<String>
 		{
 			log.error(t.getMessage() , t );
 		}
+		
+		alarmservice.sendAlarmMessage(json);
 		
 		this.saveLastId(json.getIntValue("newid"));
 	}

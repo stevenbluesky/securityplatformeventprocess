@@ -21,6 +21,7 @@ public class Zwavedevice {
 	private Integer status; 
 	private String statuses; 
 	private String warningstatuses;
+	private Integer area;
 	private Date createtime = new Date();
 	
 	@Id
@@ -79,6 +80,12 @@ public class Zwavedevice {
 	}
 	public void setCreatetime(Date createtime) {
 		this.createtime = createtime;
+	}
+	public Integer getArea() {
+		return area;
+	}
+	public void setArea(Integer area) {
+		this.area = area;
 	}
 	
 	

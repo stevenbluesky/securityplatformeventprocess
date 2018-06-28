@@ -13,6 +13,11 @@ public class SystemConfig
 	private  String thirdpartcode ;
 	private  String thirdpartpw ;
 	
+	private String alarmoneplatformid;
+	private String alarmoneplatformip;
+	private int alarmoneplatformport;
+	private String alarmoneplatformname;
+	
 	public  String getCoreserverurl() {
 		return coreserverurl;
 	}
@@ -42,6 +47,30 @@ public class SystemConfig
 	}
 	public  void setEventpushserverurl(String eventpushserverurl) {
 		this.eventpushserverurl = eventpushserverurl;
+	}
+	public String getAlarmoneplatformid() {
+		return alarmoneplatformid;
+	}
+	public void setAlarmoneplatformid(String alarmoneplatformid) {
+		this.alarmoneplatformid = alarmoneplatformid;
+	}
+	public String getAlarmoneplatformip() {
+		return alarmoneplatformip;
+	}
+	public void setAlarmoneplatformip(String alarmoneplatformip) {
+		this.alarmoneplatformip = alarmoneplatformip;
+	}
+	public int getAlarmoneplatformport() {
+		return alarmoneplatformport;
+	}
+	public void setAlarmoneplatformport(int alarmoneplatformport) {
+		this.alarmoneplatformport = alarmoneplatformport;
+	}
+	public String getAlarmoneplatformname() {
+		return alarmoneplatformname;
+	}
+	public void setAlarmoneplatformname(String alarmoneplatformname) {
+		this.alarmoneplatformname = alarmoneplatformname;
 	}
 	
 	
