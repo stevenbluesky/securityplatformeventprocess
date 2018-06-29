@@ -23,6 +23,7 @@ public class UserPO {
 	private Integer installerorgid;
 	private Integer installerid;
 	private String codepostfix;
+	private String groupid ;
 	private String supcode;
 	private String usercode;
 	private Integer personid;
@@ -158,5 +159,13 @@ public class UserPO {
 				", status=" + status +
 				", createtime=" + createtime +
 				'}';
+	}
+
+	public String getGroupid() {
+		return groupid;
+	}
+
+	public void setGroupid(String groupid) {
+		this.groupid = groupid;
 	}
 }

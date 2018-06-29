@@ -48,7 +48,7 @@ public class AlarmService
 		if ( u == null )
 			return ;
 		
-		AlarmplatformConnectionManager.getInstance().sendMessage(String.valueOf(u.getOrganizationid()), event.getType(), u.getSupcode(), String.valueOf(zone));
+		AlarmplatformConnectionManager.getInstance().sendMessage(String.valueOf(u.getOrganizationid()), event.getType(),u.getGroupid(), u.getSupcode(), zone);
 	}
 	
 	private Zwavedevice queryZwavedevice(Event event)
