@@ -18,7 +18,7 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 	private static Log log = LogFactory.getLog(AlarmoneMessageSender.class);
 	
 	private static final Map<String , String> alarmmessagemap = new HashMap<String , String>();
-	private static final String alarmmessagepatten = "~50X1 18 %s %s 01 %s";  
+	private static final String alarmmessagepatten = "~5%s1 18 %s %s 01 %03d";  
 	
 	public static AttributeKey<String> ATTR_ALARMPLATFORMNAME = AttributeKey.valueOf("ALARAMPLATEFORMNAME"); 
 	
@@ -62,13 +62,13 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 
 
 	@Override
-	public boolean sendAlarmMessage(String msg, String usercode , String zone) 
+	public boolean sendAlarmMessage(String msg, String groupid , String usercode , int zone) 
 	{
 		String ec = alarmmessagemap.get(msg);
 		if ( StringUtils.isBlank(ec))
 			return true;
 		
-		String am = String.format(alarmmessagepatten, usercode , ec , zone);
+		String am = String.format(alarmmessagepatten, groupid , usercode , ec , zone);
 		
 		LogUtils.info("Send to %s : %s" , ctx.channel().attr(ATTR_ALARMPLATFORMNAME).get() , am);
 		if ( ctx.channel().isActive())
