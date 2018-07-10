@@ -21,6 +21,7 @@ public class UserPO {
 	private String citycode;
 	private Integer organizationid;
 	private Integer installerorgid;
+	private String monitoringstationid;
 	private Integer installerid;
 	private String codepostfix;
 	private String groupid ;
@@ -141,6 +142,22 @@ public class UserPO {
 		this.supcode = supcode;
 	}
 
+	public String getGroupid() {
+		return groupid;
+	}
+
+	public void setGroupid(String groupid) {
+		this.groupid = groupid;
+	}
+
+	public String getMonitoringstationid() {
+		return monitoringstationid;
+	}
+
+	public void setMonitoringstationid(String monitoringstationid) {
+		this.monitoringstationid = monitoringstationid;
+	}
+
 	@Override
 	public String toString() {
 		return "UserPO{" +
@@ -151,21 +168,15 @@ public class UserPO {
 				", citycode='" + citycode + '\'' +
 				", organizationid=" + organizationid +
 				", installerorgid=" + installerorgid +
+				", monitoringstationid='" + monitoringstationid + '\'' +
 				", installerid=" + installerid +
 				", codepostfix='" + codepostfix + '\'' +
+				", groupid='" + groupid + '\'' +
 				", supcode='" + supcode + '\'' +
 				", usercode='" + usercode + '\'' +
 				", personid=" + personid +
 				", status=" + status +
 				", createtime=" + createtime +
 				'}';
-	}
-
-	public String getGroupid() {
-		return groupid;
-	}
-
-	public void setGroupid(String groupid) {
-		this.groupid = groupid;
 	}
 }
