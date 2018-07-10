@@ -22,6 +22,7 @@ public class DeviceInfoChangeProcessor extends GatewayBaseProcessor {
     protected void process(Event event, Gateway gateway) {
         JSONObject json = JSON.parseObject(event.getObjparam());
         Integer zwavedeviceid = json.getInteger("zwavedeviceid");
+        deviceInfoChangedDAO.deleteAll(deviceInfoChangedDAO.findByZwavedeviceid(zwavedeviceid));
         JSONArray zsdJSONArray = json.getJSONArray("zwavesubdevice");
         for (int i = 0; zsdJSONArray != null && i < zsdJSONArray.size(); i++) {
             JSONObject jsonObject = zsdJSONArray.getJSONObject(i);
@@ -36,7 +37,7 @@ public class DeviceInfoChangeProcessor extends GatewayBaseProcessor {
         deviceInfoChangedPO.setZwavedeviceid(zwavedeviceid);
         deviceInfoChangedPO.setChannelid(jsonObject.getInteger("channelid"));
         deviceInfoChangedPO.setName(jsonObject.getString("name"));
-        deviceInfoChangedPO.setName(jsonObject.getString("subdevicetype"));
+        deviceInfoChangedPO.setSubdevicetype(jsonObject.getString("subdevicetype"));
         deviceInfoChangedDAO.save(deviceInfoChangedPO);
     }
 }
