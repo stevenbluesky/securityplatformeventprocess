@@ -5,4 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface DeviceInfoChangedDAO extends CrudRepository<DeviceInfoChangedPO,Integer>{
     DeviceInfoChangedPO findByZwavesubdeviceid(Integer zwavesubdeviceid);
+
+    DeviceInfoChangedPO findByZwavedeviceidAndChannelid(Integer zwavedeviceid, int channelid);
 }

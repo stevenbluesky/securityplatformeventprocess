@@ -23,11 +23,11 @@ public class AlarmplatformConnectionManager
 		connectionmap.put(name, sender);
 	}
 	
-	public boolean sendMessage(String name , String msg ,String groupid , String usercode, int zone)
+	public boolean sendMessage(String name , String msg ,String groupid , String usercode, int zone, String alarmvalue)
 	{
 		IAlarmMessageSender ams = connectionmap.get(name);
 		if ( ams == null )
 			return false ;
-		return ams.sendAlarmMessage(msg,groupid, usercode,zone);
+		return ams.sendAlarmMessage(msg,groupid, usercode,zone,alarmvalue);
 	}
 }

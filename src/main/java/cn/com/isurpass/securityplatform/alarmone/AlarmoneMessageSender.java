@@ -62,11 +62,17 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 
 
 	@Override
-	public boolean sendAlarmMessage(String msg, String groupid , String usercode , int zone) 
+	public boolean sendAlarmMessage(String msg, String groupid , String usercode , int zone,String alarmvalue)
 	{
-		String ec = alarmmessagemap.get(msg);
-		if ( StringUtils.isBlank(ec))
-			return true;
+		String ec = null;
+		if (!StringUtils.isBlank(alarmvalue)) {
+			ec = alarmvalue;
+		}else{
+			if ( StringUtils.isBlank(ec)) {
+				return true;
+			}
+			ec = alarmmessagemap.get(msg);
+		}
 		
 		String am = String.format(alarmmessagepatten, groupid , usercode , ec , zone);
 		
