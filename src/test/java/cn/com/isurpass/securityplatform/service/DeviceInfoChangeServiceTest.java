@@ -1,7 +1,7 @@
 package cn.com.isurpass.securityplatform.service;
 
-import cn.com.isurpass.securityplatform.dao.DeviceInfoChangedDAO;
-import cn.com.isurpass.securityplatform.domain.DeviceInfoChangedPO;
+import cn.com.isurpass.securityplatform.dao.ZwaveSubDeviceDAO;
+import cn.com.isurpass.securityplatform.domain.ZwaveSubDevicePO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +12,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 public class DeviceInfoChangeServiceTest {
     @Autowired
-    private DeviceInfoChangedDAO deviceInfoChangedDAO;
+    private ZwaveSubDeviceDAO zwaveSubDeviceDAO;
 
     @Test
     public void testUpdate(){
-        DeviceInfoChangedPO deviceInfoChangedPO = new DeviceInfoChangedPO();
+        ZwaveSubDevicePO deviceInfoChangedPO = new ZwaveSubDevicePO();
         deviceInfoChangedPO.setZwavesubdeviceid(1);
         deviceInfoChangedPO.setZwavedeviceid(101);
         deviceInfoChangedPO.setChannelid(222);
-        deviceInfoChangedDAO.save(deviceInfoChangedPO);
+        zwaveSubDeviceDAO.save(deviceInfoChangedPO);
     }
 }

@@ -4,8 +4,8 @@ package cn.com.isurpass.securityplatform.domain;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "deviceinfochanged")
-public class DeviceInfoChangedPO {
+@Table(name = "zwavesubdevice")
+public class ZwaveSubDevicePO {
 
     @Id
     private Integer zwavesubdeviceid;

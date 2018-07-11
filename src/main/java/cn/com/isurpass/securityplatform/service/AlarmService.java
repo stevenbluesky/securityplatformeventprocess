@@ -1,24 +1,22 @@
 package cn.com.isurpass.securityplatform.service;
 
-import java.util.Optional;
-
-import cn.com.isurpass.securityplatform.dao.DeviceInfoChangedDAO;
-import cn.com.isurpass.securityplatform.domain.DeviceInfoChangedPO;
+import cn.com.isurpass.securityplatform.alarm.AlarmplatformConnectionManager;
+import cn.com.isurpass.securityplatform.dao.GatewayUserDao;
+import cn.com.isurpass.securityplatform.dao.UserDao;
+import cn.com.isurpass.securityplatform.dao.ZwaveSubDeviceDAO;
+import cn.com.isurpass.securityplatform.dao.ZwavedeviceDAO;
+import cn.com.isurpass.securityplatform.domain.GatewayUserPO;
+import cn.com.isurpass.securityplatform.domain.UserPO;
+import cn.com.isurpass.securityplatform.domain.ZwaveSubDevicePO;
+import cn.com.isurpass.securityplatform.domain.Zwavedevice;
+import cn.com.isurpass.securityplatform.message.vo.Event;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
-import cn.com.isurpass.securityplatform.alarm.AlarmplatformConnectionManager;
-import cn.com.isurpass.securityplatform.dao.GatewayUserDao;
-import cn.com.isurpass.securityplatform.dao.UserDao;
-import cn.com.isurpass.securityplatform.dao.ZwavedeviceDAO;
-import cn.com.isurpass.securityplatform.domain.GatewayUserPO;
-import cn.com.isurpass.securityplatform.domain.UserPO;
-import cn.com.isurpass.securityplatform.domain.Zwavedevice;
-import cn.com.isurpass.securityplatform.message.vo.Event;
+import java.util.Optional;
 
 @Component
 public class AlarmService {
@@ -29,7 +27,7 @@ public class AlarmService {
     @Autowired
     private GatewayUserDao gwudao;
     @Autowired
-    private DeviceInfoChangedDAO deviceInfoChangedDAO;
+    private ZwaveSubDeviceDAO zwaveSubDeviceDAO;
     private static final String DEVICE_TYPE_DSC = "47";
     private static final String ALARM_TYPE_DSC_ALARM = "dscalarm";
     private static final String ALARM_CODE_ALARM_PREFIX = "E";
@@ -59,8 +57,8 @@ public class AlarmService {
     }
 
     private String getTrueAlarmCode(Event event, String subdevicetype, Zwavedevice zd) {
-        int channelid = event.getIntparam();
-        DeviceInfoChangedPO dicPO = deviceInfoChangedDAO.findByZwavedeviceidAndChannelid(zd.getZwavedeviceid(), channelid);
+        int channelid = event.getWarningstatus();
+        ZwaveSubDevicePO dicPO = zwaveSubDeviceDAO.findByZwavedeviceidAndChannelid(zd.getZwavedeviceid(), channelid);
         if (dicPO != null) {
             subdevicetype = dicPO.getSubdevicetype();
             if (ALARM_TYPE_DSC_ALARM.equals(event.getType())) {

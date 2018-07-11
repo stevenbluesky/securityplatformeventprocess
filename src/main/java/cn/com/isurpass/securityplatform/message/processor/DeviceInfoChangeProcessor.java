@@ -1,8 +1,8 @@
 package cn.com.isurpass.securityplatform.message.processor;
 
-import cn.com.isurpass.securityplatform.dao.DeviceInfoChangedDAO;
-import cn.com.isurpass.securityplatform.domain.DeviceInfoChangedPO;
+import cn.com.isurpass.securityplatform.dao.ZwaveSubDeviceDAO;
 import cn.com.isurpass.securityplatform.domain.Gateway;
+import cn.com.isurpass.securityplatform.domain.ZwaveSubDevicePO;
 import cn.com.isurpass.securityplatform.message.vo.Event;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -16,13 +16,13 @@ import org.springframework.stereotype.Component;
 public class DeviceInfoChangeProcessor extends GatewayBaseProcessor {
 
     @Autowired
-    private DeviceInfoChangedDAO deviceInfoChangedDAO;
+    private ZwaveSubDeviceDAO zwaveSubDeviceDAO;
 
     @Override
     protected void process(Event event, Gateway gateway) {
         JSONObject json = JSON.parseObject(event.getObjparam());
         Integer zwavedeviceid = json.getInteger("zwavedeviceid");
-        deviceInfoChangedDAO.deleteAll(deviceInfoChangedDAO.findByZwavedeviceid(zwavedeviceid));
+        zwaveSubDeviceDAO.deleteAll(zwaveSubDeviceDAO.findByZwavedeviceid(zwavedeviceid));
         JSONArray zsdJSONArray = json.getJSONArray("zwavesubdevice");
         for (int i = 0; zsdJSONArray != null && i < zsdJSONArray.size(); i++) {
             JSONObject jsonObject = zsdJSONArray.getJSONObject(i);
@@ -31,13 +31,13 @@ public class DeviceInfoChangeProcessor extends GatewayBaseProcessor {
     }
 
     private void saveDeviceInfoChangePO(Integer zwavedeviceid, JSONObject jsonObject) {
-        DeviceInfoChangedPO deviceInfoChangedPO = new DeviceInfoChangedPO();
+        ZwaveSubDevicePO zwaveSubDevicePO = new ZwaveSubDevicePO();
         Integer zwavesubdeviceid = jsonObject.getInteger("zwavesubdeviceid");
-        deviceInfoChangedPO.setZwavesubdeviceid(zwavesubdeviceid);
-        deviceInfoChangedPO.setZwavedeviceid(zwavedeviceid);
-        deviceInfoChangedPO.setChannelid(jsonObject.getInteger("channelid"));
-        deviceInfoChangedPO.setName(jsonObject.getString("name"));
-        deviceInfoChangedPO.setSubdevicetype(jsonObject.getString("subdevicetype"));
-        deviceInfoChangedDAO.save(deviceInfoChangedPO);
+        zwaveSubDevicePO.setZwavesubdeviceid(zwavesubdeviceid);
+        zwaveSubDevicePO.setZwavedeviceid(zwavedeviceid);
+        zwaveSubDevicePO.setChannelid(jsonObject.getInteger("channelid"));
+        zwaveSubDevicePO.setName(jsonObject.getString("name"));
+        zwaveSubDevicePO.setSubdevicetype(jsonObject.getString("subdevicetype"));
+        zwaveSubDeviceDAO.save(zwaveSubDevicePO);
     }
 }
