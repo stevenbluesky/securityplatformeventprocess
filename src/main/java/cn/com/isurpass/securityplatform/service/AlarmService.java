@@ -53,7 +53,7 @@ public class AlarmService {
         if (u == null)
             return;
 
-        AlarmplatformConnectionManager.getInstance().sendMessage(String.valueOf(u.getOrganizationid()), event.getType(), u.getGroupid(), u.getSupcode(), zone, subdevicetype);
+        AlarmplatformConnectionManager.getInstance().sendMessage(String.valueOf(u.getMonitoringstationid()), event.getType(), u.getGroupid(), u.getSupcode(), zone, subdevicetype);
     }
 
     private String getTrueAlarmCode(Event event, String subdevicetype, Zwavedevice zd) {
