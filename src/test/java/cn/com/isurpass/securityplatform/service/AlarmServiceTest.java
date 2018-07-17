@@ -37,6 +37,12 @@ public class AlarmServiceTest {
 
     @Test
     public void deletewhennull() {
+        String s = "[]";
+        Integer[] integers = JSON.parseArray(s).toArray(new Integer[0]);
+        int[] ints = new int[integers.length];
+        System.out.println(ints.length);
+
+
 //		deviceInfoChangedDAO.delete(null);
 //		ZwaveSubDevicePO byZwavesubdeviceid = deviceInfoChangedDAO.findByZwavesubdeviceid(1231);
 //		System.out.println(byZwavesubdeviceid);

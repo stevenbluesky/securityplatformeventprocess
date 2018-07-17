@@ -46,6 +46,7 @@ public class AlarmService {
                 zone = zd.getArea();
             if (DEVICE_TYPE_DSC.equals(zd.getDevicetype())) {
                 subdevicetype = getTrueAlarmCode(event, subdevicetype, zd);
+                zone = event.getWarningstatus();
             }
         }
 

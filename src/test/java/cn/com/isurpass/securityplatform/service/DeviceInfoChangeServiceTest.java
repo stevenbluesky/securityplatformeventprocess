@@ -2,6 +2,7 @@ package cn.com.isurpass.securityplatform.service;
 
 import cn.com.isurpass.securityplatform.dao.ZwaveSubDeviceDAO;
 import cn.com.isurpass.securityplatform.domain.ZwaveSubDevicePO;
+import com.alibaba.fastjson.JSONArray;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,9 @@ public class DeviceInfoChangeServiceTest {
 
     @Test
     public void testUpdate(){
-        ZwaveSubDevicePO deviceInfoChangedPO = new ZwaveSubDevicePO();
-        deviceInfoChangedPO.setZwavesubdeviceid(1);
-        deviceInfoChangedPO.setZwavedeviceid(101);
-        deviceInfoChangedPO.setChannelid(222);
-        zwaveSubDeviceDAO.save(deviceInfoChangedPO);
+        String x = "[1]";
+        JSONArray jsonArray = JSONArray.parseArray(x);
+        jsonArray.removeIf(l -> l.equals(1));
+        System.out.println(jsonArray.size());
     }
 }

@@ -68,10 +68,10 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 		if (!StringUtils.isBlank(alarmvalue)) {
 			ec = alarmvalue;
 		}else{
+			ec = alarmmessagemap.get(msg);
 			if ( StringUtils.isBlank(ec)) {
 				return true;
 			}
-			ec = alarmmessagemap.get(msg);
 		}
 		
 		String am = String.format(alarmmessagepatten, groupid , usercode , ec , zone);
