@@ -3,6 +3,9 @@ package cn.com.isurpass.securityplatform.alarm;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.com.isurpass.securityplatform.domain.UserPO;
+import cn.com.isurpass.securityplatform.message.vo.Event;
+
 public class AlarmplatformConnectionManager 
 {
 	private static Map<String , IAlarmMessageSender> connectionmap = new HashMap<>();
@@ -23,11 +26,11 @@ public class AlarmplatformConnectionManager
 		connectionmap.put(name, sender);
 	}
 	
-	public boolean sendMessage(String name , String msg ,String groupid , String usercode, int zone, String alarmvalue)
+	public boolean sendMessage(String name , Event event ,UserPO user,int zone, String alarmvalue)
 	{
 		IAlarmMessageSender ams = connectionmap.get(name);
 		if ( ams == null )
 			return false ;
-		return ams.sendAlarmMessage(msg,groupid, usercode,zone,alarmvalue);
+		return ams.sendAlarmMessage(event,user,zone,alarmvalue);
 	}
 }

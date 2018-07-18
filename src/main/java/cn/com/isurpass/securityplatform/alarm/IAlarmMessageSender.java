@@ -1,5 +1,8 @@
 package cn.com.isurpass.securityplatform.alarm;
 
+import cn.com.isurpass.securityplatform.domain.UserPO;
+import cn.com.isurpass.securityplatform.message.vo.Event;
+
 public interface IAlarmMessageSender 
 {
 	/**
@@ -11,5 +14,5 @@ public interface IAlarmMessageSender
 	 * @param alarmvalue
 	 * @return
 	 */
-	boolean sendAlarmMessage(String msg , String groupid , String usercode, int zone, String alarmvalue);
+	boolean sendAlarmMessage(Event event , UserPO user, int zone, String alarmvalue);
 }

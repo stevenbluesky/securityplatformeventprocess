@@ -33,9 +33,10 @@ public class AlarmService {
     private static final String ALARM_CODE_ALARM_PREFIX = "E";
     private static final String ALARM_CODE_UN_ALARM_PREFIX = "R";
 
-    public void sendAlarmMessage(JSONObject json) {
+    public void sendAlarmMessage(JSONObject json) 
+    {
         Event event = JSON.toJavaObject(json, Event.class);
-
+        
         int zone = 1;
         String subdevicetype = null;
         if (event.getZwavedeviceid() != 0) {
@@ -54,7 +55,7 @@ public class AlarmService {
         if (u == null)
             return;
 
-        AlarmplatformConnectionManager.getInstance().sendMessage(String.valueOf(u.getMonitoringstationid()), event.getType(), u.getGroupid(), u.getSupcode(), zone, subdevicetype);
+        AlarmplatformConnectionManager.getInstance().sendMessage(String.valueOf(u.getMonitoringstationid()), event, u, zone, subdevicetype);
     }
 
     private String getTrueAlarmCode(Event event, String subdevicetype, Zwavedevice zd) {
