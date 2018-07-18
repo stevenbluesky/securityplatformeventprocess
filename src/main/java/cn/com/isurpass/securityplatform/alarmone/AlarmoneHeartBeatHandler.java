@@ -41,8 +41,8 @@ public class AlarmoneHeartBeatHandler extends SimpleChannelInboundHandler<byte[]
 	    		  || event.state() == IdleState.READER_IDLE
 	    		  || event.state() == IdleState.WRITER_IDLE) 
 	      {
-	    	  LogUtils.info("Send to %s : ~S0X1[#9966|Nri0/RP00]" , ctx.channel().attr(AlarmoneMessageSender.ATTR_ALARMPLATFORMNAME).get());
-	    	  ctx.channel().writeAndFlush("~S0X1[#9966|Nri0/RP00]".getBytes());
+	    	  LogUtils.info("Send to %s : 1011           @ " , ctx.channel().attr(AlarmoneMessageSender.ATTR_ALARMPLATFORMNAME).get());
+	    	  ctx.channel().writeAndFlush("1011           @ ".getBytes());
 	      }
 		}
 	}

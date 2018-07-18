@@ -8,6 +8,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import cn.com.isurpass.securityplatform.alarm.IAlarmMessageSender;
+import cn.com.isurpass.securityplatform.domain.UserPO;
+import cn.com.isurpass.securityplatform.message.vo.Event;
 import cn.com.isurpass.securityplatform.util.LogUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
@@ -62,19 +64,20 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 
 
 	@Override
-	public boolean sendAlarmMessage(String msg, String groupid , String usercode , int zone,String alarmvalue)
+	public boolean sendAlarmMessage(Event event, UserPO user,  int zone,String alarmvalue)
 	{
 		String ec = null;
 		if (!StringUtils.isBlank(alarmvalue)) {
 			ec = alarmvalue;
 		}else{
-			ec = alarmmessagemap.get(msg);
-			if ( StringUtils.isBlank(ec)) {
+			ec = alarmmessagemap.get(event.getType());
+			if ( StringUtils.isBlank(ec)) 
 				return true;
-			}
+			if ( ec.startsWith("E") && event.getWarningstatus() == 0 ) 
+				return true;
 		}
 		
-		String am = String.format(alarmmessagepatten, groupid , usercode , ec , zone);
+		String am = String.format(alarmmessagepatten, user.getGroupid() , user.getSupcode() , ec , zone);
 		
 		LogUtils.info("Send to %s : %s" , ctx.channel().attr(ATTR_ALARMPLATFORMNAME).get() , am);
 		if ( ctx.channel().isActive())
