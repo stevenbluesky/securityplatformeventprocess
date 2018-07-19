@@ -21,7 +21,7 @@ public class UserPO {
 	private String citycode;
 	private Integer organizationid;
 	private Integer installerorgid;
-	private String monitoringstationid;
+	private Integer monitoringstationid;
 	private Integer installerid;
 	private String codepostfix;
 	private String groupid ;
@@ -150,11 +150,11 @@ public class UserPO {
 		this.groupid = groupid;
 	}
 
-	public String getMonitoringstationid() {
+	public Integer getMonitoringstationid() {
 		return monitoringstationid;
 	}
 
-	public void setMonitoringstationid(String monitoringstationid) {
+	public void setMonitoringstationid(Integer monitoringstationid) {
 		this.monitoringstationid = monitoringstationid;
 	}
 
