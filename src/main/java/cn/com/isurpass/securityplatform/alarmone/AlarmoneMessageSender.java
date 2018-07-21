@@ -64,9 +64,9 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 		alarmmessagemap.put("remoteonline", "R350");
 		alarmmessagemap.put("dscalarm", "E132");
 		alarmmessagemap.put("unalarmdscalarm", "R132");
-		alarmmessagemap.put("armstatus_0", "R401");
-		alarmmessagemap.put("armstatus_1", "E401");
-		alarmmessagemap.put("armstatus_3", "E441");
+		alarmmessagemap.put("armstatus_0", "E401");
+		alarmmessagemap.put("armstatus_1", "R401");
+		alarmmessagemap.put("armstatus_3", "R441");
 
 //		alarmmessagemap.put("passworderror5times", "");
 //		alarmmessagemap.put("bulliedopenlock", "");
