@@ -1,14 +1,24 @@
 package cn.com.isurpass.securityplatform.alarmone;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import cn.com.isurpass.securityplatform.SpringUtil;
 import cn.com.isurpass.securityplatform.alarm.IAlarmMessageSender;
+import cn.com.isurpass.securityplatform.dao.ZwavedeviceDAO;
 import cn.com.isurpass.securityplatform.domain.UserPO;
+import cn.com.isurpass.securityplatform.domain.Zwavedevice;
 import cn.com.isurpass.securityplatform.message.vo.Event;
 import cn.com.isurpass.securityplatform.util.LogUtils;
 import io.netty.channel.ChannelHandlerContext;
@@ -21,6 +31,10 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 	
 	private static final Map<String , String> alarmmessagemap = new HashMap<String , String>();
 	private static final String alarmmessagepatten = "~5%s1 18 %s %s 01 %03d";  
+	private static final String DSCPARTIONTIONARMSTATUS = "dscpartitionarmstatus";
+	private static final String WARNING_TYPE_USER_ARM ="arm";
+	private static final String WARNING_TYPE_USER_INHOME_ARM ="inhomearm";
+	private static final String WARNING_TYPE_USER_DISARM ="disarm";
 	
 	public static AttributeKey<String> ATTR_ALARMPLATFORMNAME = AttributeKey.valueOf("ALARAMPLATEFORMNAME"); 
 	
@@ -50,6 +64,10 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 		alarmmessagemap.put("remoteonline", "R350");
 		alarmmessagemap.put("dscalarm", "E132");
 		alarmmessagemap.put("unalarmdscalarm", "R132");
+		alarmmessagemap.put("armstatus_0", "E401");
+		alarmmessagemap.put("armstatus_1", "R401");
+		alarmmessagemap.put("armstatus_3", "R441");
+
 //		alarmmessagemap.put("passworderror5times", "");
 //		alarmmessagemap.put("bulliedopenlock", "");
 //		alarmmessagemap.put("malfunction", "");
@@ -66,26 +84,99 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 	@Override
 	public boolean sendAlarmMessage(Event event, UserPO user,  int zone,String alarmvalue)
 	{
+		if ( !ctx.channel().isActive())
+		{
+			log.info("connection is not active");
+			return true;
+		}
+			
 		String ec = null;
 		if (!StringUtils.isBlank(alarmvalue)) {
 			ec = alarmvalue;
 		}else{
 			ec = alarmmessagemap.get(event.getType());
-			if ( StringUtils.isBlank(ec)) 
+			if ( StringUtils.isBlank(ec))
+			{
+				if ( DSCPARTIONTIONARMSTATUS.equals(event.getType()))
+					sendArmMessge(event , user);
+				else if ( WARNING_TYPE_USER_ARM.equals(event.getType()) 
+						|| WARNING_TYPE_USER_INHOME_ARM.equals(event.getType()) 
+						|| WARNING_TYPE_USER_DISARM.equals(event.getType()))
+					sendGatewayArmMessage(event , user);
 				return true;
+			}
 			if ( ec.startsWith("E") && event.getWarningstatus() == 0 ) 
 				return true;
 		}
 		
 		String am = String.format(alarmmessagepatten, user.getGroupid() , user.getSupcode() , ec , zone);
 		
+		sendMessage(am);
+		
+		return true;
+	}
+	
+	private void sendGatewayArmMessage(Event event, UserPO user)
+	{
+		String ec = null ;
+		if ( WARNING_TYPE_USER_ARM.equals(event.getType()) )
+			ec = "E401";
+		else if ( WARNING_TYPE_USER_INHOME_ARM.equals(event.getType()))
+			ec = "E441";
+		else if ( WARNING_TYPE_USER_DISARM.equals(event.getType()))
+			ec = "R401";
+		if ( StringUtils.isBlank(ec))
+			return ;
+		
+		ZwavedeviceDAO dao = SpringUtil.getBean(ZwavedeviceDAO.class);
+		
+		List<Zwavedevice> lst = dao.findByDeviceid(event.getDeviceid());
+		
+		if ( lst == null || lst.size() == 0 )
+			return ;
+		Set<Integer> zs = new HashSet<Integer>();
+		
+		for ( Zwavedevice zd : lst )
+		{
+			Integer zn = zd.getArea();
+			if ( zn == null )
+				zn = 1 ;
+			if ( zs.contains(zn))
+				continue;
+			zs.add(zn);
+			String am = String.format(alarmmessagepatten, user.getGroupid() , user.getSupcode() , ec , zn );
+			sendMessage(am);
+		}
+	}
+	
+	private void sendArmMessge(Event event, UserPO user)
+	{
+		if ( StringUtils.isBlank(event.getObjparam()))
+			return ;
+		JSONObject json = JSON.parseObject(event.getObjparam());
+		
+		if ( StringUtils.isBlank(json.getString("armstatus")))
+			return ;
+		JSONArray channelid = json.getJSONArray("channelid");
+		
+		if ( channelid == null || channelid.size() == 0 )
+			return ;
+		
+		String ec = alarmmessagemap.get(String.format("armstatus_%d", json.getIntValue("armstatus")));
+		for ( int i = 0 ; i < channelid.size() ; i ++ )
+		{
+			String am = String.format(alarmmessagepatten, user.getGroupid() , user.getSupcode() , ec , channelid.getIntValue(i));
+		
+			sendMessage(am);
+		}
+	}
+
+	private void sendMessage(String am)
+	{
 		LogUtils.info("Send to %s : %s" , ctx.channel().attr(ATTR_ALARMPLATFORMNAME).get() , am);
 		if ( ctx.channel().isActive())
 			ctx.channel().writeAndFlush(am.getBytes());
 		else 
 			log.info("connection is not active");
-		
-		return true;
 	}
-
 }
