@@ -1,6 +1,5 @@
 package cn.com.isurpass.securityplatform.alarmone;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -8,7 +7,6 @@ import cn.com.isurpass.securityplatform.SpringUtil;
 import cn.com.isurpass.securityplatform.SystemConfig;
 import cn.com.isurpass.securityplatform.alarm.AlarmplatformConnectionManager;
 import cn.com.isurpass.securityplatform.util.LogUtils;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
@@ -26,7 +24,16 @@ public class AlarmoneHeartBeatHandler extends SimpleChannelInboundHandler<byte[]
 //			return ;
 		if ( msg == null || msg.length == 0 )
 			return ;
-		LogUtils.info("Receive from %s : %d" , ctx.channel().attr(AlarmoneMessageSender.ATTR_ALARMPLATFORMNAME).get() , msg[0]);
+		if ( msg.length == 1)
+			LogUtils.info("Receive from %s : %d" , ctx.channel().attr(AlarmoneMessageSender.ATTR_ALARMPLATFORMNAME).get() , msg[0]);
+		else 
+		{
+			StringBuffer sb = new StringBuffer();
+			for ( int i = 0 ; i < msg.length ; i ++ )
+				sb.append(String.format("%d ", msg[i] & 0xff));
+			sb.append(new String(msg));
+		}
+		
 	}
 
 	@Override
@@ -58,6 +65,9 @@ public class AlarmoneHeartBeatHandler extends SimpleChannelInboundHandler<byte[]
 		ctx.channel().attr(AlarmoneMessageSender.ATTR_ALARMPLATFORMNAME).set(systemconfig.getAlarmoneplatformname());
 		
 		AlarmplatformConnectionManager.getInstance().putChannelHandlerContext(systemconfig.getAlarmoneplatformid(), new AlarmoneMessageSender(ctx));
+		
+  	  	LogUtils.info("Send to %s : 1011           @ " , ctx.channel().attr(AlarmoneMessageSender.ATTR_ALARMPLATFORMNAME).get());
+  	  	ctx.channel().writeAndFlush("1011           @ ".getBytes());
 	}
 
 	private byte[] concat(byte[] b1 , byte[] b2)
@@ -71,5 +81,18 @@ public class AlarmoneHeartBeatHandler extends SimpleChannelInboundHandler<byte[]
 		System.arraycopy(b1, 0, b, 0, b1.length);
 		System.arraycopy(b2, 0, b, b1.length, b2.length);
 		return b ;
+	}
+
+	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		SystemConfig systemconfig = SpringUtil.getBean(SystemConfig.class);
+		LogUtils.info("%s channel inactive", systemconfig.getAlarmoneplatformname());
+		super.channelInactive(ctx);
+	}
+
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		log.error(cause.getMessage(),cause);
+		super.exceptionCaught(ctx, cause);
 	}
 }
