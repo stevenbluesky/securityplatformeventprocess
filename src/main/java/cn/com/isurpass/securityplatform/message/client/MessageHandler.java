@@ -185,7 +185,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<String>
 		json.put("code", systemconfig.getThirdpartcode());
 		json.put("password", systemconfig.getThirdpartpw());
 		
-		String rst = HttpUtil.httprequest(String.format("https://%s/iremote/thirdpart/login", systemconfig.getCoreserverurl()), json);
+		String rst = HttpUtil.httprequest(String.format("%s/thirdpart/login", systemconfig.getCoreserverurl()), json);
 		
 		if ( StringUtils.isBlank(rst) || rst.length() == 0 ) //time out , no result .
 		{
@@ -268,5 +268,8 @@ public class MessageHandler extends SimpleChannelInboundHandler<String>
 		processormap.put("lockopeninside", "doorlockopen");
 		processormap.put("poweroverload", "devicestatus");
 		processormap.put("locklockerror", "alarmprocessor");
+		processormap.put("dooropendelaywarning", "alarmprocessor");
+		processormap.put("moveindelaywarning", "alarmprocessor");
+		processormap.put("doorlockdelaywarning", "alarmprocessor");
 	}
 }
