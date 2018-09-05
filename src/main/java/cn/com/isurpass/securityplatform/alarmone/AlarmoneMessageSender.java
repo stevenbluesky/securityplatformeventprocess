@@ -61,7 +61,7 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 		alarmmessagemap.put("unalarmpoweroverload", "R312");
 		alarmmessagemap.put("movein", "E132");
 		alarmmessagemap.put("moveindelaywarning", "E132");
-		alarmmessagemap.put("unalarmmovein", "E132");
+		alarmmessagemap.put("unalarmmovein", "R132");
 		alarmmessagemap.put("remoteoffline", "E350");
 		alarmmessagemap.put("remoteonline", "R350");
 		alarmmessagemap.put("dscalarm", "E132");
