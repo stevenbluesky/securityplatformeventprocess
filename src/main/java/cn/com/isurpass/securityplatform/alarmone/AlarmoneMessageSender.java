@@ -24,7 +24,6 @@ import cn.com.isurpass.securityplatform.util.LogUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
 
-
 public class AlarmoneMessageSender implements IAlarmMessageSender 
 {
 	private static Log log = LogFactory.getLog(AlarmoneMessageSender.class);
@@ -53,13 +52,16 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 		alarmmessagemap.put("sos", "E120");
 		alarmmessagemap.put("unalarmsos", "R120");
 		alarmmessagemap.put("dooropen", "E131");
+		alarmmessagemap.put("dooropendelaywarning", "E131");
 		alarmmessagemap.put("unalarmdooropen", "R131");
 		alarmmessagemap.put("doorlockopen", "E131");
+		alarmmessagemap.put("doorlockdelaywarning", "E131");
 		alarmmessagemap.put("unalarmdoorlockopen", "R131");
 		alarmmessagemap.put("poweroverload", "E312");
 		alarmmessagemap.put("unalarmpoweroverload", "R312");
 		alarmmessagemap.put("movein", "E132");
-		alarmmessagemap.put("unalarmmovein", "E132");
+		alarmmessagemap.put("moveindelaywarning", "E132");
+		alarmmessagemap.put("unalarmmovein", "R132");
 		alarmmessagemap.put("remoteoffline", "E350");
 		alarmmessagemap.put("remoteonline", "R350");
 		alarmmessagemap.put("dscalarm", "E132");
@@ -67,12 +69,6 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 		alarmmessagemap.put("armstatus_0", "E401");
 		alarmmessagemap.put("armstatus_1", "R401");
 		alarmmessagemap.put("armstatus_3", "R441");
-
-//		alarmmessagemap.put("passworderror5times", "");
-//		alarmmessagemap.put("bulliedopenlock", "");
-//		alarmmessagemap.put("malfunction", "");
-//		alarmmessagemap.put("recovery", "");
-//		alarmmessagemap.put("lowbattery", "");
 	}
 
 	public AlarmoneMessageSender(ChannelHandlerContext ctx) {
@@ -120,11 +116,11 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 	{
 		String ec = null ;
 		if ( WARNING_TYPE_USER_ARM.equals(event.getType()) )
-			ec = "E401";
-		else if ( WARNING_TYPE_USER_INHOME_ARM.equals(event.getType()))
-			ec = "E441";
-		else if ( WARNING_TYPE_USER_DISARM.equals(event.getType()))
 			ec = "R401";
+		else if ( WARNING_TYPE_USER_INHOME_ARM.equals(event.getType()))
+			ec = "R441";
+		else if ( WARNING_TYPE_USER_DISARM.equals(event.getType()))
+			ec = "E401";
 		if ( StringUtils.isBlank(ec))
 			return ;
 		
@@ -157,18 +153,47 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 		
 		if ( StringUtils.isBlank(json.getString("armstatus")))
 			return ;
-		JSONArray channelid = json.getJSONArray("channelid");
+		String ec = alarmmessagemap.get(String.format("armstatus_%d", json.getIntValue("armstatus")));
 		
-		if ( channelid == null || channelid.size() == 0 )
+		if ( StringUtils.isBlank(ec))
 			return ;
 		
-		String ec = alarmmessagemap.get(String.format("armstatus_%d", json.getIntValue("armstatus")));
-		for ( int i = 0 ; i < channelid.size() ; i ++ )
-		{
-			String am = String.format(alarmmessagepatten, user.getGroupid() , user.getSupcode() , ec , channelid.getIntValue(i));
+		JSONArray channelid = json.getJSONArray("channelid");
 		
-			sendMessage(am);
+		if ( channelid != null && channelid.size() > 0 )
+		{	
+			for ( int i = 0 ; i < channelid.size() ; i ++ )
+			{
+				String am = String.format(alarmmessagepatten, user.getGroupid() , user.getSupcode() , ec , channelid.getIntValue(i));
+			
+				sendMessage(am);
+			}
 		}
+		
+		JSONArray zwavedeivceid = json.getJSONArray("zwavedeivceid");
+		if ( zwavedeivceid != null && zwavedeivceid.size() > 0 )
+		{
+			
+			ZwavedeviceDAO dao = SpringUtil.getBean(ZwavedeviceDAO.class);
+			Iterable<Zwavedevice> lst = dao.findAllById(zwavedeivceid.toJavaList(Integer.class));
+			
+			if ( lst == null )
+				return ;
+			Set<Integer> zs = new HashSet<Integer>();
+			
+			for ( Zwavedevice zd : lst )
+			{
+				Integer zn = zd.getArea();
+				if ( zn == null )
+					zn = 1 ;
+				if ( zs.contains(zn))
+					continue;
+				zs.add(zn);
+				String am = String.format(alarmmessagepatten, user.getGroupid() , user.getSupcode() , ec , zn );
+				sendMessage(am);
+			}
+		}
+		
 	}
 
 	private void sendMessage(String am)
