@@ -13,6 +13,8 @@ import cn.com.isurpass.securityplatform.message.vo.Event;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +22,8 @@ import java.util.Optional;
 
 @Component
 public class AlarmService {
+	
+	private static Log log = LogFactory.getLog(AlarmService.class);
     @Autowired
     private ZwavedeviceDAO zddao;
     @Autowired
@@ -45,8 +49,13 @@ public class AlarmService {
                 return;
             if (zd.getArea() != null)
                 zone = zd.getArea();
-            if (DEVICE_TYPE_DSC.equals(zd.getDevicetype())) {
+            if (DEVICE_TYPE_DSC.equals(zd.getDevicetype()) && event.getWarningstatus() != 0 ) {
                 subdevicetype = getTrueAlarmCode(event, subdevicetype, zd);
+                if ( StringUtils.isBlank(subdevicetype))
+                {
+                	log.info("subdevicetype is null");
+                	return ;
+                }
                 zone = event.getWarningstatus();
             }
         }
@@ -63,6 +72,8 @@ public class AlarmService {
         ZwaveSubDevicePO dicPO = zwaveSubDeviceDAO.findByZwavedeviceidAndChannelid(zd.getZwavedeviceid(), channelid);
         if (dicPO != null) {
             subdevicetype = dicPO.getSubdevicetype();
+            if ( StringUtils.isBlank(subdevicetype))
+            	return null ;
             if (ALARM_TYPE_DSC_ALARM.equals(event.getType())) {
                 subdevicetype = ALARM_CODE_ALARM_PREFIX + subdevicetype;
             } else {
