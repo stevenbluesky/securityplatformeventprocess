@@ -34,6 +34,8 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 	private static final String WARNING_TYPE_USER_ARM ="arm";
 	private static final String WARNING_TYPE_USER_INHOME_ARM ="inhomearm";
 	private static final String WARNING_TYPE_USER_DISARM ="disarm";
+	public static final String MESSAGE_PARTITION_DIS_ARM_USER_CODE = "partitiondisarmusercode";
+	public static final String MESSAGE_PARTITION_ARM_USER_CODE = "partitionarmusercode";
 	
 	public static AttributeKey<String> ATTR_ALARMPLATFORMNAME = AttributeKey.valueOf("ALARAMPLATEFORMNAME"); 
 	
@@ -93,12 +95,15 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 			ec = alarmmessagemap.get(event.getType());
 			if ( StringUtils.isBlank(ec))
 			{
-				if ( DSCPARTIONTIONARMSTATUS.equals(event.getType()))
-					sendArmMessge(event , user);
-				else if ( WARNING_TYPE_USER_ARM.equals(event.getType()) 
-						|| WARNING_TYPE_USER_INHOME_ARM.equals(event.getType()) 
-						|| WARNING_TYPE_USER_DISARM.equals(event.getType()))
-					sendGatewayArmMessage(event , user);
+//				if ( DSCPARTIONTIONARMSTATUS.equals(event.getType()))
+//					sendArmMessge(event , user);
+//				else if ( WARNING_TYPE_USER_ARM.equals(event.getType()) 
+//						|| WARNING_TYPE_USER_INHOME_ARM.equals(event.getType()) 
+//						|| WARNING_TYPE_USER_DISARM.equals(event.getType()))
+//					sendGatewayArmMessage(event , user);
+				if (MESSAGE_PARTITION_DIS_ARM_USER_CODE.equals(event.getType()) 
+					|| MESSAGE_PARTITION_ARM_USER_CODE.equals(event.getType()) )
+					sendArmMessage(event , user);
 				return true;
 			}
 			if ( ec.startsWith("E") && event.getWarningstatus() == 0 ) 
@@ -110,6 +115,24 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 		sendMessage(am);
 		
 		return true;
+	}
+	
+	private void sendArmMessage(Event event, UserPO user)
+	{
+		if ( StringUtils.isBlank(event.getObjparam()))
+			return ;
+		JSONObject json = JSON.parseObject(event.getObjparam());
+		
+		if ( StringUtils.isBlank(json.getString("armstatus")))
+			return ;
+		String ec = alarmmessagemap.get(String.format("armstatus_%d", json.getIntValue("armstatus")));
+		
+		if ( StringUtils.isBlank(ec))
+			return ;
+
+		String am = String.format(alarmmessagepatten, user.getGroupid() , user.getSupcode() , ec , event.getIntparam() );
+		
+		sendMessage(am);
 	}
 	
 	private void sendGatewayArmMessage(Event event, UserPO user)
