@@ -71,6 +71,13 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 		alarmmessagemap.put("armstatus_0", "E401");
 		alarmmessagemap.put("armstatus_1", "R401");
 		alarmmessagemap.put("armstatus_3", "R441");
+
+		alarmmessagemap.put("dscfkeyalarm", "E110");
+		alarmmessagemap.put("unalarmdscfkeyalarm", "R110");
+		alarmmessagemap.put("dscakeyalarm", "E100");
+		alarmmessagemap.put("unalarmdscakeyalarm", "R100");
+		alarmmessagemap.put("dscpkeyalarm", "E120");
+		alarmmessagemap.put("unalarmdscpkeyalarm", "R120");
 	}
 
 	public AlarmoneMessageSender(ChannelHandlerContext ctx) {
