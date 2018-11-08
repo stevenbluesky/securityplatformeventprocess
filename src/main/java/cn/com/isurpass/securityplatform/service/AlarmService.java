@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.Optional;
 
 @Component
@@ -36,11 +37,22 @@ public class AlarmService {
     private static final String ALARM_TYPE_DSC_ALARM = "dscalarm";
     private static final String ALARM_CODE_ALARM_PREFIX = "E";
     private static final String ALARM_CODE_UN_ALARM_PREFIX = "R";
+    private static final HashSet<String> DSC_SELF_WARNING_TYPE_SET = new HashSet<>();
+    private static final int DEFAULT_ZONE = 1;
 
-    public void sendAlarmMessage(JSONObject json) 
-    {
+    static{
+        DSC_SELF_WARNING_TYPE_SET.add("dscfkeyalarm");
+        DSC_SELF_WARNING_TYPE_SET.add("unalarmdscfkeyalarm");
+        DSC_SELF_WARNING_TYPE_SET.add("dscakeyalarm");
+        DSC_SELF_WARNING_TYPE_SET.add("unalarmdscakeyalarm");
+        DSC_SELF_WARNING_TYPE_SET.add("dscpkeyalarm");
+        DSC_SELF_WARNING_TYPE_SET.add("unalarmdscpkeyalarm");
+    }
+
+    public void sendAlarmMessage(JSONObject json) {
+
         Event event = JSON.toJavaObject(json, Event.class);
-        
+
         int zone = 1;
         String subdevicetype = null;
         if (event.getZwavedeviceid() != 0) {
@@ -49,15 +61,18 @@ public class AlarmService {
                 return;
             if (zd.getArea() != null)
                 zone = zd.getArea();
-            if (DEVICE_TYPE_DSC.equals(zd.getDevicetype()) && event.getWarningstatus() != 0 ) {
+            if (!DSC_SELF_WARNING_TYPE_SET.contains(event.getType()) && DEVICE_TYPE_DSC.equals(zd.getDevicetype()) && event.getWarningstatus() != 0) {
                 subdevicetype = getTrueAlarmCode(event, subdevicetype, zd);
-                if ( StringUtils.isBlank(subdevicetype))
-                {
-                	log.info("subdevicetype is null");
-                	return ;
+                if (StringUtils.isBlank(subdevicetype)) {
+                    log.info("subdevicetype is null");
+                    return;
                 }
                 zone = event.getWarningstatus();
             }
+        }
+
+        if (DSC_SELF_WARNING_TYPE_SET.contains(event.getType())) {
+            zone = DEFAULT_ZONE;
         }
 
         UserPO u = queryUser(event);
