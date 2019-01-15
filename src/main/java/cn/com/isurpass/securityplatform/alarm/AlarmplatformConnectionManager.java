@@ -3,11 +3,16 @@ package cn.com.isurpass.securityplatform.alarm;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import cn.com.isurpass.securityplatform.domain.UserPO;
 import cn.com.isurpass.securityplatform.message.vo.Event;
 
 public class AlarmplatformConnectionManager 
 {
+	@SuppressWarnings("unused")
+	private static Log log = LogFactory.getLog(AlarmplatformConnectionManager.class);
 	private static Map<String , IAlarmMessageSender> connectionmap = new HashMap<>();
 	private static AlarmplatformConnectionManager instance = new AlarmplatformConnectionManager();
 	

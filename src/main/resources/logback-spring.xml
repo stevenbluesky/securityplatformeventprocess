@@ -41,12 +41,28 @@
 			<appender-ref ref="STDOUT" />
 			<appender-ref ref="FILE" />
 		</root>
+		<Logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace" additivity="false">
+			<appender-ref ref="STDOUT" />
+			<appender-ref ref="FILE" />
+		</Logger>
+		<Logger name="org.hibernate.SQL" level="trace" additivity="false">
+			<appender-ref ref="STDOUT" />
+			<appender-ref ref="FILE" />
+		</Logger>
 	</springProfile>
 	
 	<springProfile name="prod">
 		<root level="INFO">
 			<appender-ref ref="FILE" />
 		</root>
+		<Logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace" additivity="false">
+			<appender-ref ref="STDOUT" />
+			<appender-ref ref="FILE" />
+		</Logger>
+		<Logger name="org.hibernate.SQL" level="trace" additivity="false">
+			<appender-ref ref="STDOUT" />
+			<appender-ref ref="FILE" />
+		</Logger>
 	</springProfile>
 	
 </configuration>

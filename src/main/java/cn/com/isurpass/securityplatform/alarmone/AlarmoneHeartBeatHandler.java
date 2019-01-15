@@ -59,17 +59,29 @@ public class AlarmoneHeartBeatHandler extends SimpleChannelInboundHandler<byte[]
 	{
 		super.channelActive(ctx);
 		
-		SystemConfig systemconfig = SpringUtil.getBean(SystemConfig.class);
-		LogUtils.info("%s channel active", systemconfig.getAlarmoneplatformname());
+		LogUtils.info("%s channel active", getAlarmPlatformName());
 		
-		ctx.channel().attr(AlarmoneMessageSender.ATTR_ALARMPLATFORMNAME).set(systemconfig.getAlarmoneplatformname());
+		ctx.channel().attr(AlarmoneMessageSender.ATTR_ALARMPLATFORMNAME).set(getAlarmPlatformName());
 		
-		AlarmplatformConnectionManager.getInstance().putChannelHandlerContext(systemconfig.getAlarmoneplatformid(), new AlarmoneMessageSender(ctx));
+		setAlarmMessageSender(ctx);
 		
   	  	LogUtils.info("Send to %s : 1011           @ " , ctx.channel().attr(AlarmoneMessageSender.ATTR_ALARMPLATFORMNAME).get());
   	  	ctx.channel().writeAndFlush("1011           @ ".getBytes());
 	}
+	
+	protected void setAlarmMessageSender(ChannelHandlerContext ctx)
+	{
+		SystemConfig systemconfig = SpringUtil.getBean(SystemConfig.class);
+		AlarmplatformConnectionManager.getInstance().putChannelHandlerContext(systemconfig.getAlarmoneplatformid(), new AlarmoneMessageSender(ctx));
+	}
 
+	protected String getAlarmPlatformName()
+	{
+		SystemConfig systemconfig = SpringUtil.getBean(SystemConfig.class);
+		return systemconfig.getAlarmoneplatformname();
+	}
+	
+	@SuppressWarnings("unused")
 	private byte[] concat(byte[] b1 , byte[] b2)
 	{
 		if ( b1 == null )
@@ -85,8 +97,8 @@ public class AlarmoneHeartBeatHandler extends SimpleChannelInboundHandler<byte[]
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-		SystemConfig systemconfig = SpringUtil.getBean(SystemConfig.class);
-		LogUtils.info("%s channel inactive", systemconfig.getAlarmoneplatformname());
+		
+		LogUtils.info("%s channel inactive", getAlarmPlatformName());
 		super.channelInactive(ctx);
 	}
 

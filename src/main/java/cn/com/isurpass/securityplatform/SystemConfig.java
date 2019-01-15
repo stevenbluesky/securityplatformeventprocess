@@ -18,6 +18,11 @@ public class SystemConfig
 	private int alarmoneplatformport;
 	private String alarmoneplatformname;
 	
+	private String alarmtwoplatformid;
+	private String alarmtwoplatformip;
+	private int alarmtwoplatformport;
+	private String alarmtwoplatformname;
+	
 	public  String getCoreserverurl() {
 		return coreserverurl;
 	}
@@ -71,6 +76,30 @@ public class SystemConfig
 	}
 	public void setAlarmoneplatformname(String alarmoneplatformname) {
 		this.alarmoneplatformname = alarmoneplatformname;
+	}
+	public String getAlarmtwoplatformid() {
+		return alarmtwoplatformid;
+	}
+	public void setAlarmtwoplatformid(String alarmtwoplatformid) {
+		this.alarmtwoplatformid = alarmtwoplatformid;
+	}
+	public String getAlarmtwoplatformip() {
+		return alarmtwoplatformip;
+	}
+	public void setAlarmtwoplatformip(String alarmtwoplatformip) {
+		this.alarmtwoplatformip = alarmtwoplatformip;
+	}
+	public int getAlarmtwoplatformport() {
+		return alarmtwoplatformport;
+	}
+	public void setAlarmtwoplatformport(int alarmtwoplatformport) {
+		this.alarmtwoplatformport = alarmtwoplatformport;
+	}
+	public String getAlarmtwoplatformname() {
+		return alarmtwoplatformname;
+	}
+	public void setAlarmtwoplatformname(String alarmtwoplatformname) {
+		this.alarmtwoplatformname = alarmtwoplatformname;
 	}
 	
 	

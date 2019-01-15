@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import cn.com.isurpass.securityplatform.SpringUtil;
 import cn.com.isurpass.securityplatform.SystemConfig;
 import cn.com.isurpass.securityplatform.alarmone.AlarmoneClientInitializer;
+import cn.com.isurpass.securityplatform.alarmtwo.AlarmTwoClientInitializer;
 import cn.com.isurpass.securityplatform.netty.NettyClient;
 
 @Component
@@ -27,6 +28,7 @@ public class MessageClient implements ApplicationRunner, Runnable{
 		NettyClient.startClient(systemconfig.getEventpushserverurl(),systemconfig.getCoreserverport(), new MessageClientInitializer());
 		
 		NettyClient.startClient(systemconfig.getAlarmoneplatformip(), systemconfig.getAlarmoneplatformport(), new AlarmoneClientInitializer());
+		NettyClient.startClient(systemconfig.getAlarmtwoplatformip(), systemconfig.getAlarmtwoplatformport(), new AlarmTwoClientInitializer());
 	}
 
 

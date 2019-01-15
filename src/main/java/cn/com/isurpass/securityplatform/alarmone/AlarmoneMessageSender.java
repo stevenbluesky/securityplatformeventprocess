@@ -29,7 +29,7 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 	private static Log log = LogFactory.getLog(AlarmoneMessageSender.class);
 	
 	private static final Map<String , String> alarmmessagemap = new HashMap<String , String>();
-	private static final String alarmmessagepatten = "~5%s1 18 %s %s 01 %03d";  
+	protected String alarmmessagepatten = "~5%s1 18 %s %s 01 %03d";  
 	private static final String DSCPARTIONTIONARMSTATUS = "dscpartitionarmstatus";
 	private static final String WARNING_TYPE_USER_ARM ="arm";
 	private static final String WARNING_TYPE_USER_INHOME_ARM ="inhomearm";
@@ -58,6 +58,7 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 		alarmmessagemap.put("unalarmdooropen", "R131");
 		alarmmessagemap.put("doorlockopen", "E131");
 		alarmmessagemap.put("doorlockdelaywarning", "E131");
+//		alarmmessagemap.put("doorlockopendelaywarning", "E131");
 		alarmmessagemap.put("unalarmdoorlockopen", "R131");
 		alarmmessagemap.put("poweroverload", "E312");
 		alarmmessagemap.put("unalarmpoweroverload", "R312");
@@ -94,7 +95,7 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 			log.info("connection is not active");
 			return true;
 		}
-			
+					
 		String ec = null;
 		if (!StringUtils.isBlank(alarmvalue)) {
 			ec = alarmvalue;
@@ -102,21 +103,20 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 			ec = alarmmessagemap.get(event.getType());
 			if ( StringUtils.isBlank(ec))
 			{
-//				if ( DSCPARTIONTIONARMSTATUS.equals(event.getType()))
-//					sendArmMessge(event , user);
-//				else if ( WARNING_TYPE_USER_ARM.equals(event.getType()) 
-//						|| WARNING_TYPE_USER_INHOME_ARM.equals(event.getType()) 
-//						|| WARNING_TYPE_USER_DISARM.equals(event.getType()))
-//					sendGatewayArmMessage(event , user);
 				if (MESSAGE_PARTITION_DIS_ARM_USER_CODE.equals(event.getType()) 
 					|| MESSAGE_PARTITION_ARM_USER_CODE.equals(event.getType()) )
-					sendArmMessage(event , user);
+					{
+						sendArmMessage(event , user);
+					}
 				return true;
 			}
 			if ( ec.startsWith("E") && event.getWarningstatus() == 0 ) 
+			{
 				return true;
+			}
 		}
 		
+
 		String am = String.format(alarmmessagepatten, user.getGroupid() , user.getSupcode() , ec , zone);
 		
 		sendMessage(am);

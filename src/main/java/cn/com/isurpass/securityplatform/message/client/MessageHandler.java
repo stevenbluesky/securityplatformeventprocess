@@ -271,5 +271,6 @@ public class MessageHandler extends SimpleChannelInboundHandler<String>
 		processormap.put("dooropendelaywarning", "alarmprocessor");
 		processormap.put("moveindelaywarning", "alarmprocessor");
 		processormap.put("doorlockdelaywarning", "alarmprocessor");
+//		processormap.put("doorlockopendelaywarning", "alarmprocessor");
 	}
 }
