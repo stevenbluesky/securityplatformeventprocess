@@ -52,10 +52,19 @@ public class AlarmoneHeartBeatHandler extends SimpleChannelInboundHandler<byte[]
 	      {
 	    	  LogUtils.info("Send to %s :%s" , ctx.channel().attr(AlarmoneMessageSender.ATTR_ALARMPLATFORMNAME).get() , hearbeat);
 	    	  ctx.channel().writeAndFlush(hearbeat.getBytes());
+	    	  
+	    	  checkConnectionStatus(ctx);
 	      }
 		}
 	}
 
+	protected void checkConnectionStatus(ChannelHandlerContext ctx)
+	{
+		SystemConfig systemconfig = SpringUtil.getBean(SystemConfig.class);
+		if ( !AlarmplatformConnectionManager.getInstance().isActive(systemconfig.getAlarmoneplatformid()))
+			setAlarmMessageSender(ctx);
+	}
+	
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception 
 	{

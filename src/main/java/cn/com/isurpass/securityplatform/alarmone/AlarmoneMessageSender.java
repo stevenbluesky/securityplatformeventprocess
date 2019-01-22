@@ -229,4 +229,10 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 		else 
 			log.info("connection is not active");
 	}
+
+	@Override
+	public boolean isActive() 
+	{
+		return ( ctx != null && ctx.channel().isActive());
+	}
 }

@@ -1,7 +1,7 @@
 package cn.com.isurpass.securityplatform.alarm;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,7 +13,7 @@ public class AlarmplatformConnectionManager
 {
 	@SuppressWarnings("unused")
 	private static Log log = LogFactory.getLog(AlarmplatformConnectionManager.class);
-	private static Map<String , IAlarmMessageSender> connectionmap = new HashMap<>();
+	private static Map<String , IAlarmMessageSender> connectionmap = new ConcurrentHashMap<>();
 	private static AlarmplatformConnectionManager instance = new AlarmplatformConnectionManager();
 	
 	public static AlarmplatformConnectionManager getInstance()
@@ -37,5 +37,13 @@ public class AlarmplatformConnectionManager
 		if ( ams == null )
 			return false ;
 		return ams.sendAlarmMessage(event,user,zone,alarmvalue);
+	}
+	
+	public boolean isActive(String name)
+	{
+		IAlarmMessageSender ams = connectionmap.get(name);
+		if ( ams == null )
+			return false ;
+		return ams.isActive();
 	}
 }
