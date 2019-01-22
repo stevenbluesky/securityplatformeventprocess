@@ -97,7 +97,8 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 			if ( StringUtils.isBlank(ec))
 			{
 				if (MESSAGE_PARTITION_DIS_ARM_USER_CODE.equals(event.getType()) 
-					|| MESSAGE_PARTITION_ARM_USER_CODE.equals(event.getType()) )
+					|| MESSAGE_PARTITION_ARM_USER_CODE.equals(event.getType()) 
+					|| DSCPARTIONTIONARMSTATUS.equals(event.getType()))
 					{
 						sendArmMessage(event , user);
 					}
