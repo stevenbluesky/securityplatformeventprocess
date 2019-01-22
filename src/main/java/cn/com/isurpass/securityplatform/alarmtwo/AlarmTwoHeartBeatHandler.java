@@ -14,6 +14,12 @@ public class AlarmTwoHeartBeatHandler extends AlarmoneHeartBeatHandler
 {
 	private static Log log = LogFactory.getLog(AlarmTwoHeartBeatHandler.class);
 	
+	public AlarmTwoHeartBeatHandler() 
+	{
+		super();
+		hearbeat = "101000           @   ";
+	}
+
 	@Override
 	protected void setAlarmMessageSender(ChannelHandlerContext ctx)
 	{
