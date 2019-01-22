@@ -15,4 +15,6 @@ public interface IAlarmMessageSender
 	 * @return
 	 */
 	boolean sendAlarmMessage(Event event , UserPO user, int zone, String alarmvalue);
+	
+	boolean isActive();
 }
