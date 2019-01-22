@@ -110,7 +110,8 @@ public class AlarmoneMessageSender implements IAlarmMessageSender
 					}
 				return true;
 			}
-			if ( ec.startsWith("E") && event.getWarningstatus() == 0 
+			if ( ec.startsWith("E") 
+					&& event.getWarningstatus() == 0 
 					&&  !"E350".equals(ec) ) // gateway offline  
 			{
 				return true;
