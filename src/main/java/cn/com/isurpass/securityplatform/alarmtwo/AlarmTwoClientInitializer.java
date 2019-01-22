@@ -15,7 +15,7 @@ public class AlarmTwoClientInitializer extends ChannelInitializer<SocketChannel>
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
 
-        pipeline.addLast(new IdleStateHandler(180, 30, 30, TimeUnit.SECONDS));
+        pipeline.addLast(new IdleStateHandler(180, 15, 15, TimeUnit.SECONDS));
         //pipeline.addLast("escapecoder", new EscapeCoder());
         pipeline.addLast("framer", new FixedLengthFrameDecoder(1));
         pipeline.addLast("handler", new AlarmTwoHeartBeatHandler());
