@@ -17,6 +17,8 @@ public class AlarmoneHeartBeatHandler extends SimpleChannelInboundHandler<byte[]
 	@SuppressWarnings("unused")
 	private static Log log = LogFactory.getLog(AlarmoneHeartBeatHandler.class);
 	
+	protected String hearbeat = "1011           @ ";
+	
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, byte[] msg) throws Exception 
 	{
@@ -48,8 +50,8 @@ public class AlarmoneHeartBeatHandler extends SimpleChannelInboundHandler<byte[]
 	    		  || event.state() == IdleState.READER_IDLE
 	    		  || event.state() == IdleState.WRITER_IDLE) 
 	      {
-	    	  LogUtils.info("Send to %s : 1011           @ " , ctx.channel().attr(AlarmoneMessageSender.ATTR_ALARMPLATFORMNAME).get());
-	    	  ctx.channel().writeAndFlush("1011           @ ".getBytes());
+	    	  LogUtils.info("Send to %s :%s" , ctx.channel().attr(AlarmoneMessageSender.ATTR_ALARMPLATFORMNAME).get() , hearbeat);
+	    	  ctx.channel().writeAndFlush(hearbeat.getBytes());
 	      }
 		}
 	}
@@ -65,8 +67,8 @@ public class AlarmoneHeartBeatHandler extends SimpleChannelInboundHandler<byte[]
 		
 		setAlarmMessageSender(ctx);
 		
-  	  	LogUtils.info("Send to %s : 1011           @ " , ctx.channel().attr(AlarmoneMessageSender.ATTR_ALARMPLATFORMNAME).get());
-  	  	ctx.channel().writeAndFlush("1011           @ ".getBytes());
+  	  	LogUtils.info("Send to %s :%s" , ctx.channel().attr(AlarmoneMessageSender.ATTR_ALARMPLATFORMNAME).get() , hearbeat);
+  	  	ctx.channel().writeAndFlush(hearbeat.getBytes());
 	}
 	
 	protected void setAlarmMessageSender(ChannelHandlerContext ctx)
