@@ -15,7 +15,7 @@
 		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
 			<fileNamePattern>${LOG_HOME}/securityplatformeventprocess.log.%i</fileNamePattern>
 			<minIndex>1</minIndex>
-			<maxIndex>20</maxIndex>
+			<maxIndex>50</maxIndex>
 		</rollingPolicy>
 		
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
