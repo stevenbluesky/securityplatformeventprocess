@@ -25,7 +25,7 @@ public class AlarmTwoHeartBeatHandler extends AlarmoneHeartBeatHandler
 	{
 		SystemConfig systemconfig = SpringUtil.getBean(SystemConfig.class);
 		log.info("setAlarmMessageSender " + systemconfig.getAlarmtwoplatformid());
-		AlarmplatformConnectionManager.getInstance().putChannelHandlerContext(systemconfig.getAlarmtwoplatformid(), new AlarmoneMessageSender(ctx));
+		AlarmplatformConnectionManager.getInstance().putChannelHandlerContext(systemconfig.getAlarmtwoplatformid(), new AlarmTwoMessageSender(ctx));
 	}
 	
 	@Override
